@@ -3,23 +3,23 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:math';
-import 'package:intl/intl.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:memechat/ImagePickerFlutter.dart';
 import 'package:memechat/chatmodel/ChatKeyModel.dart';
 
 import 'platform_adaptive.dart';
-import 'type_meme.dart';
 
 void main() {
-  runApp(new MyApp());
+  runApp(new ImagePickerFlutter());
 }
+
+final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 class MyApp extends StatelessWidget {
   @override
@@ -40,6 +40,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
+
+
   List<ChatMessage> _messages = [];
   DatabaseReference _messagesReference = FirebaseDatabase.instance.reference()
       .child('1')
@@ -183,7 +185,80 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 //      'textOverlay': textOverlay,
 //    };
 //    _messagesReference.push().set(message);
+    _showDialog(); //show alert dialog to choose image
   }
+
+  //show dialog for choose images from
+// user defined function
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+
+      context: _scaffoldKey.currentContext,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Choose Image"),
+          content: new Container(
+            height: 80.0,
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+                    print('onTap');
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new Text(
+                      "Camera",
+                      style: new TextStyle(fontSize: 17.0,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Roboto"),
+                    ),
+                  ),
+                ),
+                new Divider(
+                  color: Colors.grey,
+                ),
+                InkWell(
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new Text(
+                      "Gallery",
+                      style: new TextStyle(fontSize: 17.0,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Roboto"),
+                    ),
+                  ),
+                  onTap: () {
+                    print('onTap');
+                  },
+                ),
+              ]
+              ,
+            ),
+
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 
   Widget _buildTextComposer() {
     return new IconTheme(
@@ -223,6 +298,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget build(BuildContext context) {
     return new Scaffold(
+        key: _scaffoldKey,
         appBar: new PlatformAdaptiveAppBar(
           title: new Text('Memechat'),
           platform: Theme
@@ -309,7 +385,10 @@ class ChatMessageListItem extends StatelessWidget {
     var format = new DateFormat("yMd");
     return format.format(date);
   }
+
+
 }
+
 
 //class ChatMessageContent extends StatelessWidget {
 //  ChatMessageContent(this.message);

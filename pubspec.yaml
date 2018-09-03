@@ -10,6 +10,7 @@ dependencies:
   firebase_database: ^1.0.4
   firebase_storage: ^1.0.2
   intl: ^0.15.7
+  video_player: ^0.6.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
